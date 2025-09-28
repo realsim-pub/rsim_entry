@@ -15,7 +15,7 @@ def try_except(func):
             logger.error(
                 f"call func with error:{func}, {str(e)}, traceback:{traceback.print_exc()}"
             )
-            self.on_error(f"adapter has error.")
+            self.on_error(f"runner has error.")
     return wrapper
 
 class Runner(ABC):
@@ -34,3 +34,11 @@ class Runner(ABC):
     
     def on_error(self, msg: str) -> bool:
         return True
+
+    @classmethod
+    def _runner_name(cls) -> str:
+        return cls.__name__
+
+    @property
+    def runner_name(self) -> str:
+        return self._runner_name()

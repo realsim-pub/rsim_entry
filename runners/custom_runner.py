@@ -26,19 +26,28 @@ class CustomRunner(Runner):
     @try_except
     def init(self):
         logger.info("on init...")
-        self._runner.init()
-        self._server.update_state(rsim.ModuleState.READY)
+        if self._runner.init():
+            self._server.update_state(rsim.ModuleState.READY)
+        else:
+            self.on_error(f"init {self._runner.runner_name} failed.")
     
     @try_except
     def start(self):
         logger.info("on start...")
         self._server.update_state(rsim.ModuleState.RUNNING)
-        self._runner.start()
-        self._server.update_state(rsim.ModuleState.FINISHED)
+        if self._runner.start():
+            self._server.update_state(rsim.ModuleState.FINISHED)
+        else:
+            self.on_error(f"start {self._runner.runner_name} failed.")
     
     @try_except
     def stop(self):
         logger.info("on stop...")
-        self._runner.stop()
-        self._server.update_state(rsim.ModuleState.FINISHED)
+        if self._runner.stop():
+            self._server.update_state(rsim.ModuleState.FINISHED)
+        else:
+            self.on_error(f"stop {self._runner.runner_name} failed.")
+    
+    def on_error(self, msg):
+        self._server.update_state(rsim.ModuleState.RUNNING_ERROR)
     
