@@ -1,0 +1,3 @@
+dill
+singleton_decorator
+shapely
