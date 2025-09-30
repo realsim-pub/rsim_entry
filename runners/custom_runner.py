@@ -25,7 +25,7 @@ class CustomRunner(Runner):
         super(CustomRunner, self).__init__()
         self._task_params: TaskParams = task_params
         self._server: rsim.PythonServerBase = server
-        self._runner: Optional[Runner] = self.create_runner()
+        self._runner: Optional[Runner] = None
 
     def create_runner(self) -> Optional[Runner]:
         conf_file: str = str(Path(self._task_params.resource.runner_dir).joinpath("config.json"))
