@@ -494,6 +494,7 @@ class ResourceParam(object):
         self._sensor_conf: str = (
             resource_param.sensor_conf if hasattr(resource_param, "sensor_conf") else ""
         )
+        self._runner_dir: str = resource_param.runner_dir if hasattr(resource_param, "runner_dir") else ""
 
     @property
     def map_dir(self) -> str:

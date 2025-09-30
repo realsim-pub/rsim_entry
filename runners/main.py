@@ -3,8 +3,9 @@ import argparse
 
 from runners.runner.runner import Runner
 from runners.custom_runner import CustomRunner
-from third_party.python.common.param.params import RunType
+from runners.pnc_runner import PNCRunner
 from third_party.python.common.param.task_param import TaskParams
+from third_party.python.common.param.params import RunType
 from third_party.python.common.logger.logger import Logger
 
 logger = Logger.get_logger(__name__)
@@ -18,8 +19,8 @@ class RunnerFactory(object):
             return CustomRunner(task_params=task_params,
                                 server=server)
         else:
-            return CustomRunner(task_params=task_params,
-                                server=server)  
+            return PNCRunner(task_params=task_params,
+                             server=server)
 
 class RunnerServer(object):
     def __init__(self, task_param_b64: bytes):

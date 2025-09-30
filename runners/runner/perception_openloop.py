@@ -10,8 +10,8 @@ class PerceptionOpenLoop(Runner):
         self._record_dir: str = record_dir
         self._percep_data_file: str = percep_data_file
         
-    def init(self) -> bool:
-        start_perception_cmd = ""
+    def init(self):
+        start_perception_cmd = f"cd /workspace/workspace/hv_percep_x86_20250915_service/install; bash run_exec.sh > {self._log_dir}/perception.log 2>&1"
         ShellRun.async_run(start_perception_cmd)
         return True
 
@@ -19,19 +19,19 @@ class PerceptionOpenLoop(Runner):
         record_cmd = (
             f"ros2 bag record -o {self._record_dir}/realview.mcap "
             f"--max-bag-size 5368709120 "
-            f"--max-bag-duration 600 "
+            f"--max-bag-duration 600  --all "
             f" > {self._log_dir}/record_mcap.log 2>&1"
         )
         ShellRun.async_run(record_cmd)
+        logger.info(f"record mcap cmd:{record_cmd}")
     
     def start_replay(self):
-        play_cmd = f"ros2 bag play {self._percep_data_file}"
-        status, msg, _ = ShellRun.sync_run(play_cmd)
-        if status > 0:
-            logger.error(f"replay bag {self._percep_data_file} with error:{msg}.")
-        return status <= 0
+        play_cmd = f"ros2 bag play --storage sqlite3 {self._percep_data_file} > {self._log_dir}/play_mcap.log 2>&1"
+        code, msg, _ = ShellRun.sync_run(play_cmd)
+        logger.error(f"play bag cmd: {play_cmd} failed:{msg}")
+        return code <=0
 
-    def start(self) -> bool:
+    def start(self):
         self.start_record()
         self.start_replay()
         
